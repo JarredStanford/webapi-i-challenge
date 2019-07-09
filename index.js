@@ -31,7 +31,7 @@ server.get("/users/:id", (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).json(err)
+            res.status(500).json({ error: "The user information could not be retrieved." })
         })
 })
 
@@ -41,10 +41,12 @@ server.post('/users', (req, res) => {
     console.log(userInfo);
 
     Users.insert(userInfo)
-        .then(user => {
-            if (req.body.name && req.body.bio) {
-                res.status(201).json(userInfo);
-
+        .then(person => {
+            if (userInfo.name && userInfo.bio) {
+                Users.findById(person.id)
+                    .then(user => {
+                        res.status(200).json(user)
+                    })
             } else {
                 res.status(400).json({ message: "Name and Bio are required" })
             }
@@ -78,9 +80,7 @@ server.put("/users/:id", (req, res) => {
 
     if (!updatedUser.name || !updatedUser.bio) {
         res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
-    }
-
-    Users.update(id, updatedUser)
+    } else Users.update(id, updatedUser)
         .then(updated => {
             if (updated) {
                 res.status(200).json(updated);
@@ -89,7 +89,7 @@ server.put("/users/:id", (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).json(error)
+            res.status(500).json(err)
         })
 })
 

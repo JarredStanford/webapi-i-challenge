@@ -1,4 +1,8 @@
 // implement your API here
+const dotenv = require('dotenv')
+dotenv.config();
+
+
 const express = require('express') //import express
 
 const Users = require("./data/db.js") //import server
@@ -93,5 +97,5 @@ server.put("/users/:id", (req, res) => {
         })
 })
 
-const port = 5000;
+const port = process.env.PORT || 4000;
 server.listen(port, () => console.log(`running on ${port}`)) //tell server to listen
